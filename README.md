@@ -101,10 +101,13 @@ It is **not overkill** and **not shortcut** it is balanced.
 
 ## Photos & Video
 <div style="display: flex; flex-direction: row; gap: 5px; justify-content: space-between;">
+  
   <img width="19%" alt="Screenshot 1: Image Gallery Home" src="https://github.com/user-attachments/assets/120c8f5e-b1a7-41f9-8dd1-371707b4198b" />
   <img width="19%" alt="Screenshot 5: App Loading Shimmer" src="https://github.com/user-attachments/assets/b1c06be3-39f0-41c8-9090-f7ec10bfb2b9" />
+  <img width="19%" height="2856" alt="Screenshot_20251127_220855" src="https://github.com/user-attachments/assets/04ff0c78-24d4-4aae-8ba1-3040d174812d" />
   <img width="19%" alt="Screenshot 2: Filter Dropdown" src="https://github.com/user-attachments/assets/878fabc5-072e-4bb3-a7c6-5ec1daaf7a79" />
   <img width="19%" alt="Screenshot 3: Sorting Options" src="https://github.com/user-attachments/assets/bcd17e00-aaa1-4a8b-a2fc-61288ac7c092" />
+
 </div>
  <div style="width: 50%; margin: 0 auto;">
     <video 
@@ -116,6 +119,7 @@ It is **not overkill** and **not shortcut** it is balanced.
       loop>
     </video>
 </div>
+
 
 
 
