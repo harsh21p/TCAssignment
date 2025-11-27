@@ -11,6 +11,13 @@ sealed class Screen(val route: String) {
     data object Photos : Screen("photos")
 }
 
+/**
+ * Defines all navigation destinations for the app.
+ *
+ * Currently includes:
+ *  - PhotosScreen (root screen)
+ *
+ */
 @Composable
 fun AppNavGraph(
     navController: NavHostController = rememberNavController()

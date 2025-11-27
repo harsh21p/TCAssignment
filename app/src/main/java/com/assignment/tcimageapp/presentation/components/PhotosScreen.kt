@@ -32,6 +32,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.assignment.tcimageapp.data.remote.dto.PhotoDto
 import com.assignment.tcimageapp.presentation.feature.PhotosViewModel
 
+/**
+ * Main Screen UI
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhotosScreen(

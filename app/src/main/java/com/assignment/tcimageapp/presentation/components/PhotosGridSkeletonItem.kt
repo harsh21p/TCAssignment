@@ -15,6 +15,9 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
 
+/**
+ * Skeleton item for photos grid loader.
+ */
 @Composable
 fun PhotosGridSkeletonItem(
     modifier: Modifier = Modifier

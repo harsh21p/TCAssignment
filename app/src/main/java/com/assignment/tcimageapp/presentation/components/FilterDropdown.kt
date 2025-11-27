@@ -28,6 +28,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 
+/**
+ * Dropdown to select an author.
+ *
+ * - Emits selected author to ViewModel
+ *
+ * @param authors Distinct list of authors extracted from photos.
+ * @param selectedAuthor Current filter applied.
+ * @param onAuthorSelected Callback invoked whenever user picks author.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterDropdown(
