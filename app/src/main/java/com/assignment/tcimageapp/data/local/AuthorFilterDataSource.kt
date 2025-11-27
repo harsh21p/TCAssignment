@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import androidx.datastore.preferences.core.edit
 
+/**
+* Provides persistent storage for selected author.
+*
+* Uses - Jetpack DataStore.
+ */
 @Singleton
 class AuthorFilterDataSource @Inject constructor(
     private val dataStore: DataStore<Preferences>

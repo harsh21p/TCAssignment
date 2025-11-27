@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 
+// Image
 @Composable
 fun PhotosGridItem(
     photo: PhotoDto,
@@ -39,7 +40,6 @@ fun PhotosGridItem(
                 1f
             }
 
-            // Image
             AsyncImage(
                 model = photo.downloadUrl,
                 contentDescription = "Photo by ${photo.author}",

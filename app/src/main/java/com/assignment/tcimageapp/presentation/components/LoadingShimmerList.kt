@@ -7,6 +7,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.ui.Modifier
 
+
+/**
+ * Shows a full screen shimmer list while loading photos.
+ *
+ * Mimics the exact structure of the final grid:
+ *  - Two columns
+ *  - Randomized heights for natural feel
+ */
 @Composable
 fun LoadingShimmerList(
     modifier: Modifier = Modifier

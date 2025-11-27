@@ -13,6 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+/**
+ * Reusable error component shown when:
+ *  - Internet is unavailable
+ *  - API fails
+ *
+ * Displays error message and retry button.
+ */
 @Composable
 fun ErrorView(
     message: String,

@@ -14,6 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.assignment.tcimageapp.core.PhotosSortOption
 
+/**
+ * Toggle Button and sort filters
+ *
+ */
 @Composable
 fun PhotosSortAndSyncBar(
     selectedSort: PhotosSortOption,
