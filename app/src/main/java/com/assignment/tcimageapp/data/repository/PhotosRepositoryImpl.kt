@@ -14,6 +14,14 @@ import com.assignment.tcimageapp.core.internet.NetworkState
 import com.assignment.tcimageapp.core.internet.NoInternetException
 import android.util.Log
 
+/**
+ * Concrete implementation of [PhotosRepository].
+ *
+ * Handles:
+ *  - API calls using Retrofit
+ *  - Reading/writing datastore photos
+ *
+ */
 @Singleton
 class PhotosRepositoryImpl @Inject constructor(
     private val apiService: PicsumApiService,

@@ -12,6 +12,12 @@ import androidx.datastore.preferences.core.edit
 import com.assignment.tcimageapp.data.remote.dto.PhotoDto
 import kotlinx.coroutines.flow.first
 
+/**
+ * Handles saving and retrieving cached photos using DataStore.
+ *
+ * The caching format string stored in a Preferences DataStore.
+ *
+ */
 @Singleton
 class PhotosCacheDataSource @Inject constructor(
     private val dataStore: DataStore<Preferences>,

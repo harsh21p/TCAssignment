@@ -9,6 +9,13 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Provides persistent storage for:
+ *  - Offline
+ *  - Selected author
+ *
+ * Used - Jetpack DataStore.
+ */
 @Singleton
 class OfflineSettingsDataSource @Inject constructor(
     private val dataStore: DataStore<Preferences>

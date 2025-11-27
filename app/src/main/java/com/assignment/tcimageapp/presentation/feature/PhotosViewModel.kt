@@ -21,6 +21,18 @@ import kotlinx.coroutines.launch
 import android.util.Log
 
 
+
+/**
+ * ViewModel responsible for:
+ *   - Loading photos (online/offline)
+ *   - Applying filters (selected author)
+ *   - Applying sorting
+ *   - Handling Offline Sync logic
+ *   - Providing UI state to Compose screens
+ *
+ * State is exposed as a StateFlow<PhotosUiState> for updates.
+ *
+ */
 @HiltViewModel
 class PhotosViewModel @Inject constructor(
     private val getSelectedAuthorAction: GetSelectedAuthorAction,
