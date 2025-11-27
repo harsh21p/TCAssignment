@@ -11,7 +11,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
 
-
 private const val PREFS_NAME = "user_preferences"
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(

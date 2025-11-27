@@ -1,11 +1,13 @@
 package com.assignment.tcimageapp.presentation.feature.photos
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.assignment.tcimageapp.data.remote.dto.PhotoDto
+import com.assignment.tcimageapp.presentation.components.PhotosSortBar
 import com.assignment.tcimageapp.presentation.feature.PhotosViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +53,7 @@ fun PhotosScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Lorem Picsum Viewer",
+                        text = "My Image Viewer",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -77,6 +80,10 @@ fun PhotosScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            PhotosSortBar(
+                selected = uiState.sortOption,
+                onSortSelected = viewModel::onSortOptionSelected
+            )
             FilterDropdown(
                 authors = uiState.authors,
                 selectedAuthor = uiState.selectedAuthor,
@@ -115,12 +122,15 @@ private fun PhotosGrid(
     photos: List<PhotoDto>,
     modifier: Modifier = Modifier
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = modifier
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(2),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalItemSpacing = 8.dp
     ) {
-        items(photos, key = { it.id }) { photo ->
-            PhotosGridItem(photo = photo)
+        items(photos) { photo ->
+            PhotosGridItem(photo)
         }
     }
 }

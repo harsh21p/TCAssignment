@@ -2,6 +2,7 @@ package com.assignment.tcimageapp.presentation.feature
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.assignment.tcimageapp.core.PhotosSortOption
 import com.assignment.tcimageapp.domain.action.GetPhotosAction
 import com.assignment.tcimageapp.domain.action.GetSelectedAuthorAction
 import com.assignment.tcimageapp.domain.action.SaveSelectedAuthorAction
@@ -33,7 +34,7 @@ class PhotosViewModel @Inject constructor(
         viewModelScope.launch {
             getSelectedAuthorAction().collect { savedAuthor ->
                 _uiState.update { it.copy(selectedAuthor = savedAuthor) }
-                applyFilter()
+                applyFilterAndSort()
             }
         }
     }
@@ -54,7 +55,7 @@ class PhotosViewModel @Inject constructor(
                             errorMessage = null
                         )
                     }
-                    applyFilter()
+                    applyFilterAndSort()
                 }
                 .onFailure { throwable ->
                     _uiState.update {
@@ -70,11 +71,12 @@ class PhotosViewModel @Inject constructor(
     fun onAuthorSelected(author: String?) {
         viewModelScope.launch {
             _uiState.update { it.copy(selectedAuthor = author) }
-            applyFilter()
+            applyFilterAndSort()
             saveSelectedAuthorUseCase(author)
         }
     }
 
+    // not using after sort option is added
     private fun applyFilter() {
         val state = _uiState.value
         val selectedAuthor = state.selectedAuthor
@@ -88,5 +90,45 @@ class PhotosViewModel @Inject constructor(
 
     fun retry() {
         loadPhotos()
+    }
+
+
+    private fun applyFilterAndSort() {
+        val state = _uiState.value
+
+        val filtered = if (state.selectedAuthor.isNullOrEmpty()) {
+            state.allPhotos
+        } else {
+            state.allPhotos.filter { it.author == state.selectedAuthor }
+        }
+
+        val sorted = when (state.sortOption) {
+            PhotosSortOption.DEFAULT -> filtered
+
+            PhotosSortOption.AUTHOR_ASC ->
+                filtered.sortedBy { it.author.lowercase() }
+
+            PhotosSortOption.AUTHOR_DESC ->
+                filtered.sortedByDescending { it.author.lowercase() }
+
+            PhotosSortOption.WIDTH_ASC ->
+                filtered.sortedBy { it.width }
+
+            PhotosSortOption.WIDTH_DESC ->
+                filtered.sortedByDescending { it.width }
+
+            PhotosSortOption.HEIGHT_ASC ->
+                filtered.sortedBy { it.height }
+
+            PhotosSortOption.HEIGHT_DESC ->
+                filtered.sortedByDescending { it.height }
+        }
+
+        _uiState.update { it.copy(filteredPhotos = sorted) }
+    }
+
+    fun onSortOptionSelected(option: PhotosSortOption) {
+        _uiState.update { it.copy(sortOption = option) }
+        applyFilterAndSort()
     }
 }

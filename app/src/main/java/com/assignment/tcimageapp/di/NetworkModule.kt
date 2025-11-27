@@ -4,6 +4,7 @@ import com.assignment.tcimageapp.core.Constants
 import com.assignment.tcimageapp.data.remote.api.PicsumApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,4 +65,6 @@ object NetworkModule {
     ): PicsumApiService {
         return retrofit.create(PicsumApiService::class.java)
     }
+
+
 }

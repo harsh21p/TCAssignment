@@ -1,5 +1,6 @@
 package com.assignment.tcimageapp.presentation.feature
 
+import com.assignment.tcimageapp.core.PhotosSortOption
 import com.assignment.tcimageapp.data.remote.dto.PhotoDto
 
 
@@ -9,5 +10,6 @@ data class PhotosUiState(
     val allPhotos: List<PhotoDto> = emptyList(),
     val filteredPhotos: List<PhotoDto> = emptyList(),
     val authors: List<String> = emptyList(),
-    val selectedAuthor: String? = null
+    val selectedAuthor: String? = null,
+    val sortOption: PhotosSortOption = PhotosSortOption.DEFAULT
 )

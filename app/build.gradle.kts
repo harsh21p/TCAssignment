@@ -7,7 +7,6 @@ plugins {
 }
 
 configurations.all {
-    exclude(group = "com.google.guava", module = "listenablefuture")
 }
 
 android {
@@ -45,7 +44,9 @@ android {
         compose = true
     }
 }
-
+hilt {
+    enableAggregatingTask = false
+}
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -69,14 +70,11 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.accompanist.placeholder)
     implementation(libs.hilt.android)
-    implementation(libs.androidx.datastore.core)
-    implementation(libs.androidx.compiler)
     implementation(libs.androidx.navigation.compose)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
