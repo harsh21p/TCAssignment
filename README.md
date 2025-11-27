@@ -2,6 +2,9 @@
 
 A clean, scalable, offline-capable Android app built with **Kotlin**, **Jetpack Compose**, **MVVM**, and modern best practices.
 
+# Download
+[Download App (APK)](https://github.com/harsh21p/TCAssignment/raw/refs/heads/main/TCAssignment.apk)
+
 ## Overview
 
 API - https://picsum.photos/
@@ -113,6 +116,9 @@ It is **not overkill** and **not shortcut** it is balanced.
       loop>
     </video>
 </div>
+
+
+
 
 
 
