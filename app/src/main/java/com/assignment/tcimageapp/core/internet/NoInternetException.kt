@@ -1,6 +1,5 @@
 package com.assignment.tcimageapp.core.internet
 
-
 import java.io.IOException
 
 class NoInternetException(

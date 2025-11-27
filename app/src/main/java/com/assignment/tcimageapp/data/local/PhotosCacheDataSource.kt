@@ -1,16 +1,16 @@
 package com.assignment.tcimageapp.data.local
 
+import javax.inject.Singleton
+import javax.inject.Inject
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.assignment.tcimageapp.data.remote.dto.PhotoDto
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import androidx.datastore.preferences.core.edit
+import com.assignment.tcimageapp.data.remote.dto.PhotoDto
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class PhotosCacheDataSource @Inject constructor(
@@ -38,5 +38,11 @@ class PhotosCacheDataSource @Inject constructor(
         return runCatching {
             adapter.fromJson(json) ?: emptyList()
         }.getOrElse { emptyList() }
+    }
+
+    suspend fun clearPhotos() {
+        dataStore.edit { prefs ->
+            prefs.remove(Keys.CACHED_PHOTOS_JSON)
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.assignment.tcimageapp.data.remote.api
 
-import com.assignment.tcimageapp.data.remote.dto.PhotoDto
 import retrofit2.http.GET
+import com.assignment.tcimageapp.data.remote.dto.PhotoDto
 
 interface PicsumApiService {
 

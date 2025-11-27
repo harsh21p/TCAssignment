@@ -11,5 +11,6 @@ data class PhotosUiState(
     val filteredPhotos: List<PhotoDto> = emptyList(),
     val authors: List<String> = emptyList(),
     val selectedAuthor: String? = null,
+    val isOfflineEnabled: Boolean = false,
     val sortOption: PhotosSortOption = PhotosSortOption.DEFAULT
 )

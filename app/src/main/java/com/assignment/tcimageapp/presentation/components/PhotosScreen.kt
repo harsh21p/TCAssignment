@@ -1,7 +1,10 @@
-package com.assignment.tcimageapp.presentation.feature.photos
+package com.assignment.tcimageapp.presentation.components
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.runtime.Composable
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,17 +13,14 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.assignment.tcimageapp.data.remote.dto.PhotoDto
-import com.assignment.tcimageapp.presentation.components.PhotosSortBar
 import com.assignment.tcimageapp.presentation.feature.PhotosViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +37,7 @@ import com.assignment.tcimageapp.presentation.feature.PhotosViewModel
 fun PhotosScreen(
     viewModel: PhotosViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.myPhotos.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.errorMessage) {
@@ -80,9 +79,12 @@ fun PhotosScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            PhotosSortBar(
-                selected = uiState.sortOption,
-                onSortSelected = viewModel::onSortOptionSelected
+
+            PhotosSortAndSyncBar(
+                selectedSort = uiState.sortOption,
+                onSortSelected = viewModel::onSortOptionSelected,
+                isOfflineEnabled = uiState.isOfflineEnabled,
+                onOfflineToggle = viewModel::onOfflineSyncToggled
             )
             FilterDropdown(
                 authors = uiState.authors,

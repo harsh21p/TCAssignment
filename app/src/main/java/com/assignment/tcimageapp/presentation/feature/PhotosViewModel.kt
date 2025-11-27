@@ -1,39 +1,55 @@
 package com.assignment.tcimageapp.presentation.feature
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.assignment.tcimageapp.core.PhotosSortOption
-import com.assignment.tcimageapp.domain.action.GetPhotosAction
-import com.assignment.tcimageapp.domain.action.GetSelectedAuthorAction
-import com.assignment.tcimageapp.domain.action.SaveSelectedAuthorAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import com.assignment.tcimageapp.core.PhotosSortOption
+import com.assignment.tcimageapp.domain.action.GetOfflineEnabledAction
+import com.assignment.tcimageapp.domain.action.GetPhotosAction
+import com.assignment.tcimageapp.domain.action.GetSelectedAuthorAction
+import com.assignment.tcimageapp.domain.action.SaveOfflineEnabledAction
+import com.assignment.tcimageapp.domain.action.SaveSelectedAuthorAction
+import kotlinx.coroutines.flow.first
+import com.assignment.tcimageapp.domain.action.ClearPhotosCacheAction
+
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import android.util.Log
 
 
 @HiltViewModel
 class PhotosViewModel @Inject constructor(
-    private val getPhotosUseCase: GetPhotosAction,
     private val getSelectedAuthorAction: GetSelectedAuthorAction,
-    private val saveSelectedAuthorUseCase: SaveSelectedAuthorAction
+    private val saveSelectedAuthorUseCase: SaveSelectedAuthorAction,
+    private val clearPhotosCacheAction: ClearPhotosCacheAction,
+    private val getOfflineEnabledAction: GetOfflineEnabledAction,
+    private val saveOfflineEnabledAction: SaveOfflineEnabledAction,
+    private val getPhotosAction: GetPhotosAction
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PhotosUiState())
-    val uiState: StateFlow<PhotosUiState> = _uiState.asStateFlow()
+    private val myPhotosMain = MutableStateFlow(PhotosUiState())
+    val myPhotos: StateFlow<PhotosUiState> = myPhotosMain.asStateFlow()
+
 
     init {
         observeSelectedAuthor()
-        loadPhotos()
+        viewModelScope.launch {
+            val offlineEnabled = getOfflineEnabledAction().first()
+            myPhotosMain.update {
+                it.copy(isOfflineEnabled = offlineEnabled)
+            }
+            loadPhotos()
+        }
     }
 
     private fun observeSelectedAuthor() {
         viewModelScope.launch {
             getSelectedAuthorAction().collect { savedAuthor ->
-                _uiState.update { it.copy(selectedAuthor = savedAuthor) }
+                myPhotosMain.update { it.copy(selectedAuthor = savedAuthor) }
                 applyFilterAndSort()
             }
         }
@@ -41,13 +57,17 @@ class PhotosViewModel @Inject constructor(
 
     fun loadPhotos() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            myPhotosMain.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = getPhotosUseCase()
+            val offlineEnabled = myPhotosMain.value.isOfflineEnabled
+            Log.e("VM",offlineEnabled.toString())
+            val result = getPhotosAction(offlineEnabled)
+
             result
                 .onSuccess { photos ->
                     val authors = photos.map { it.author }.distinct().sorted()
-                    _uiState.update {
+                    Log.e("VM","SUCCESS")
+                    myPhotosMain.update {
                         it.copy(
                             isLoading = false,
                             allPhotos = photos,
@@ -58,10 +78,14 @@ class PhotosViewModel @Inject constructor(
                     applyFilterAndSort()
                 }
                 .onFailure { throwable ->
-                    _uiState.update {
+                    Log.e("VM","FAIL")
+                    myPhotosMain.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = throwable.message ?: "Unknown error"
+                            allPhotos = emptyList(),
+                            authors = emptyList(),
+                            filteredPhotos = emptyList(),
+                            errorMessage = throwable.message
                         )
                     }
                 }
@@ -70,31 +94,30 @@ class PhotosViewModel @Inject constructor(
 
     fun onAuthorSelected(author: String?) {
         viewModelScope.launch {
-            _uiState.update { it.copy(selectedAuthor = author) }
+            myPhotosMain.update { it.copy(selectedAuthor = author) }
             applyFilterAndSort()
             saveSelectedAuthorUseCase(author)
         }
     }
 
-    // not using after sort option is added
+    // Not using after sort option is added but it was the initial implementation
     private fun applyFilter() {
-        val state = _uiState.value
+        val state = myPhotosMain.value
         val selectedAuthor = state.selectedAuthor
         val filtered = if (selectedAuthor.isNullOrEmpty()) {
             state.allPhotos
         } else {
             state.allPhotos.filter { it.author == selectedAuthor }
         }
-        _uiState.update { it.copy(filteredPhotos = filtered) }
+        myPhotosMain.update { it.copy(filteredPhotos = filtered) }
     }
 
     fun retry() {
         loadPhotos()
     }
 
-
     private fun applyFilterAndSort() {
-        val state = _uiState.value
+        val state = myPhotosMain.value
 
         val filtered = if (state.selectedAuthor.isNullOrEmpty()) {
             state.allPhotos
@@ -105,30 +128,31 @@ class PhotosViewModel @Inject constructor(
         val sorted = when (state.sortOption) {
             PhotosSortOption.DEFAULT -> filtered
 
-            PhotosSortOption.AUTHOR_ASC ->
-                filtered.sortedBy { it.author.lowercase() }
-
-            PhotosSortOption.AUTHOR_DESC ->
+            PhotosSortOption.AUTHOR ->
                 filtered.sortedByDescending { it.author.lowercase() }
 
-            PhotosSortOption.WIDTH_ASC ->
-                filtered.sortedBy { it.width }
-
-            PhotosSortOption.WIDTH_DESC ->
-                filtered.sortedByDescending { it.width }
-
-            PhotosSortOption.HEIGHT_ASC ->
-                filtered.sortedBy { it.height }
-
-            PhotosSortOption.HEIGHT_DESC ->
+            PhotosSortOption.HEIGHT ->
                 filtered.sortedByDescending { it.height }
         }
 
-        _uiState.update { it.copy(filteredPhotos = sorted) }
+        myPhotosMain.update { it.copy(filteredPhotos = sorted) }
     }
 
     fun onSortOptionSelected(option: PhotosSortOption) {
-        _uiState.update { it.copy(sortOption = option) }
+        myPhotosMain.update { it.copy(sortOption = option) }
         applyFilterAndSort()
+    }
+
+    fun onOfflineSyncToggled(enabled: Boolean) {
+        viewModelScope.launch {
+            myPhotosMain.update { it.copy(isOfflineEnabled = enabled) }
+
+            saveOfflineEnabledAction(enabled)
+
+            if (!enabled) {
+                clearPhotosCacheAction()
+            }
+            loadPhotos()
+        }
     }
 }

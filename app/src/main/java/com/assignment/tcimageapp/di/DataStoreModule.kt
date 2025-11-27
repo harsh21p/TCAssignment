@@ -1,15 +1,15 @@
 package com.assignment.tcimageapp.di
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
+import dagger.hilt.components.SingletonComponent
+import androidx.datastore.core.DataStore
+import android.content.Context
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 
 private const val PREFS_NAME = "user_preferences"
 

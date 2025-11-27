@@ -5,9 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface PhotosRepository {
 
-    suspend fun fetchPhotos(): Result<List<PhotoDto>>
+    suspend fun fetchPhotos(offlineEnabled: Boolean): Result<List<PhotoDto>>
 
     fun observeSelectedAuthor(): Flow<String?>
 
     suspend fun saveSelectedAuthor(author: String?)
+
+    suspend fun clearPhotosCache()
 }

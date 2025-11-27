@@ -1,16 +1,16 @@
 package com.assignment.tcimageapp.core.internet
 
+import javax.inject.Singleton
+import javax.inject.Inject
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 
 @Singleton
-class NetworkMonitorImpl @Inject constructor(
+class NetworkStateImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : NetworkState {
 
