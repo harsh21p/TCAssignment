@@ -63,8 +63,43 @@ I implemented a offline data sync.
 | **Online (Sync Disabled)** | **OFF** | Always fetches from API, but **never saves/caches** images. Old cache is cleared immediately. |
 | **Offline (Sync Disabled)** | **OFF** | Always fails to fetch. Shows a definitive "**No Internet**" error. |
 
+
+---
+
 With this way we can test both the features mentioned offline as well as error handling.
 To test test the loading scenario, please set the network speed on your emulator to EDGE and use a poor network strength setting.
+
+### Libraries Used for Unit Tests
+
+| Library | Purpose |
+|--------|---------|
+| **kotlinx-coroutines-test** | Provides `runTest`, `runCurrent`, and controlled dispatchers to test coroutine based ViewModel logic deterministically. |
+| **JUnit 4** | |
+
+---
+
+## What the Unit Tests Cover
+
+### **1. Default state loads correctly**
+- Verifies the ViewModel loads initial photos at startup.
+- Ensures `filteredPhotos` initially matches `allPhotos`.
+- Checks that offline mode defaults to **false** (as expected from DataStore).
+
+### **2. Filtering photos by author**
+- Selecting an author updates the filtered list.
+- Ensures only the chosen author's photos appear.
+- Confirms that the selected author is persisted via the fake data source.
+
+### **3. Sorting photos**
+- **Sort by author:** Checks that photos are sorted alphabetically (descending).
+- **Sort by height:** Ensures sorting works by photo height (descending).
+- Validates consistent results even when filtering is active.
+
+### **4. Filter + Sort Interaction**
+- Ensures sorting does *not* reset the selected author.
+- Confirms filtering is always reapplied after sorting.
+- Guarantees the resulting list always respects both active states.
+
 ---
 
 ## UI Logic & Composables
@@ -118,6 +153,7 @@ It is **not overkill** and **not shortcut** it is balanced.
       >
     </video>
 </div>
+
 
 
 
