@@ -5,6 +5,47 @@ A clean, scalable, offline-capable Android app built with **Kotlin**, **Jetpack 
 # Download
 [Download App (APK)](https://github.com/harsh21p/TCAssignment/raw/refs/heads/main/TCAssignment.apk)
 
+
+---
+
+## Feature List
+
+### Completed Core Features
+* Fetch photos from API
+* Error UI and retry
+* loading state
+* **Filter** by author
+
+### Extra Features
+* **Sort** by author
+* Offline capablities
+* Shimmer skeleton loader
+
+---
+
+
+## Photos & Video
+<div style="display: flex; flex-direction: row; gap: 5px; justify-content: space-between;">
+  
+  <img width="19%" alt="Screenshot 1: Image Gallery Home" src="https://github.com/user-attachments/assets/120c8f5e-b1a7-41f9-8dd1-371707b4198b" />
+  <img width="19%" alt="Screenshot 5: App Loading Shimmer" src="https://github.com/user-attachments/assets/b1c06be3-39f0-41c8-9090-f7ec10bfb2b9" />
+  <img width="19%" height="2856" alt="Screenshot_20251127_220855" src="https://github.com/user-attachments/assets/04ff0c78-24d4-4aae-8ba1-3040d174812d" />
+  <img width="19%" alt="Screenshot 2: Filter Dropdown" src="https://github.com/user-attachments/assets/878fabc5-072e-4bb3-a7c6-5ec1daaf7a79" />
+  <img width="19%" alt="Screenshot 3: Sorting Options" src="https://github.com/user-attachments/assets/bcd17e00-aaa1-4a8b-a2fc-61288ac7c092" />
+
+</div>
+ <div style="width: 50%; margin: 0 auto;">
+    <video 
+      width="19%" 
+      src="https://github.com/user-attachments/assets/f31202af-3308-44cd-9b9c-e3ab6405d534" 
+      controls 
+      muted 
+      >
+    </video>
+</div>
+
+---
+
 ## Overview
 
 API - https://picsum.photos/
@@ -110,23 +151,6 @@ Images are loaded gradually using Compose's lazy list feature for smooth perform
 * `rememberSaveable`: Used to restore values (like scroll position, search input) on configuration changes (e.g., screen rotation).
 * `MutableStateFlow`: Used in the ViewModel to centralize state. This ensures UI auto updates and makes the business logic highly testable.
 
----
-
-## Feature List
-
-### Completed Core Features
-* Fetch photos from API
-* Error UI and retry
-* loading state
-* **Filter** by author
-
-### Extra Features
-* **Sort** by author
-* Offline capablities
-* Shimmer skeleton loader
-
----
-
 ## Conclusion
 
 This code is built to be **maintainable**, **scalable**, **readable**. Every architectural choice (Flow, MVVM, Repository, Compose) and every library (Coil, Retrofit, DataStore, Hilt) was chosen practically.
@@ -134,25 +158,6 @@ This code is built to be **maintainable**, **scalable**, **readable**. Every arc
 It is **not overkill** and **not shortcut** it is balanced.
 
 
-## Photos & Video
-<div style="display: flex; flex-direction: row; gap: 5px; justify-content: space-between;">
-  
-  <img width="19%" alt="Screenshot 1: Image Gallery Home" src="https://github.com/user-attachments/assets/120c8f5e-b1a7-41f9-8dd1-371707b4198b" />
-  <img width="19%" alt="Screenshot 5: App Loading Shimmer" src="https://github.com/user-attachments/assets/b1c06be3-39f0-41c8-9090-f7ec10bfb2b9" />
-  <img width="19%" height="2856" alt="Screenshot_20251127_220855" src="https://github.com/user-attachments/assets/04ff0c78-24d4-4aae-8ba1-3040d174812d" />
-  <img width="19%" alt="Screenshot 2: Filter Dropdown" src="https://github.com/user-attachments/assets/878fabc5-072e-4bb3-a7c6-5ec1daaf7a79" />
-  <img width="19%" alt="Screenshot 3: Sorting Options" src="https://github.com/user-attachments/assets/bcd17e00-aaa1-4a8b-a2fc-61288ac7c092" />
-
-</div>
- <div style="width: 50%; margin: 0 auto;">
-    <video 
-      width="19%" 
-      src="https://github.com/user-attachments/assets/f31202af-3308-44cd-9b9c-e3ab6405d534" 
-      controls 
-      muted 
-      >
-    </video>
-</div>
 
 
 
