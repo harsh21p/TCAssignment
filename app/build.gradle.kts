@@ -10,6 +10,11 @@ configurations.all {
 }
 
 android {
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
+
     namespace = "com.assignment.tcimageapp"
     compileSdk = 36
 

@@ -64,7 +64,7 @@ I implemented a offline data sync.
 | **Offline (Sync Disabled)** | **OFF** | Always fails to fetch. Shows a definitive "**No Internet**" error. |
 
 With this way we can test both the features mentioned offline as well as error handling.
-
+To test test the loading scenario, please set the network speed on your emulator to EDGE and use a poor network strength setting.
 ---
 
 ## UI Logic & Composables
@@ -112,8 +112,7 @@ It is **not overkill** and **not shortcut** it is balanced.
       src="https://github.com/user-attachments/assets/f31202af-3308-44cd-9b9c-e3ab6405d534" 
       controls 
       muted 
-      autoplay 
-      loop>
+      >
     </video>
 </div>
 
