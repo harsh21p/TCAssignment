@@ -32,19 +32,24 @@ class PhotosViewModelFilterSortTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
+
     private lateinit var fakeRepository: PhotosRepository
     private lateinit var fakeAuthorRepository: AuthorRepository
-    private lateinit var offlineSettingsDataSource: OfflineSettingsDataSource
+    private lateinit var fakeLocalRepository: PhotosRepository
+
     private lateinit var getSelectedAuthorAction: GetSelectedAuthorAction
     private lateinit var saveSelectedAuthorAction: SaveSelectedAuthorAction
     private lateinit var clearPhotosCacheAction: ClearPhotosCacheAction
     private lateinit var getOfflineEnabledAction: GetOfflineEnabledAction
     private lateinit var saveOfflineEnabledAction: SaveOfflineEnabledAction
     private lateinit var getPhotosAction: GetPhotosAction
-    private lateinit var fakeLocalRepository: PhotosRepository
+
     private lateinit var networkMonitor: NetworkState
-    private lateinit var photos: List<PhotoDto>
+
     private lateinit var inMemoryDataStore: InMemoryPreferencesDataStore
+    private lateinit var offlineSettingsDataSource: OfflineSettingsDataSource
+
+    private lateinit var photos: List<PhotoDto>
 
     @Before
     fun setup() {
@@ -58,15 +63,22 @@ class PhotosViewModelFilterSortTest {
         fakeRepository = FakePhotosRepository(photos)
         fakeLocalRepository = FakePhotosRepository(photos)
         fakeAuthorRepository = FakeAuthorRepository()
+
         networkMonitor = NetworkMonitorFake(true)
+
         inMemoryDataStore = InMemoryPreferencesDataStore()
         offlineSettingsDataSource = OfflineSettingsDataSource(inMemoryDataStore)
+
         getSelectedAuthorAction = GetSelectedAuthorAction(fakeAuthorRepository)
         saveSelectedAuthorAction = SaveSelectedAuthorAction(fakeAuthorRepository)
         clearPhotosCacheAction = ClearPhotosCacheAction(fakeRepository)
         getOfflineEnabledAction = GetOfflineEnabledAction(offlineSettingsDataSource)
         saveOfflineEnabledAction = SaveOfflineEnabledAction(offlineSettingsDataSource)
-        getPhotosAction = GetPhotosAction(networkMonitor,fakeRepository,fakeLocalRepository)
+        getPhotosAction = GetPhotosAction(
+            networkMonitor = networkMonitor,
+            remotePhotoRepository = fakeRepository,
+            localPhotoRepository = fakeLocalRepository
+        )
     }
 
     private fun createViewModel(): PhotosViewModel {
