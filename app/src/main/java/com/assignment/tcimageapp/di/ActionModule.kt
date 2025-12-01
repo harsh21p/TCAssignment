@@ -1,5 +1,8 @@
 package com.assignment.tcimageapp.di
 
+import com.assignment.tcimageapp.core.internet.NetworkState
+import com.assignment.tcimageapp.di.annotations.LocalQualifier
+import com.assignment.tcimageapp.di.annotations.RemoteQualifier
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,6 +12,7 @@ import com.assignment.tcimageapp.domain.repository.PhotosRepository
 
 import com.assignment.tcimageapp.domain.action.GetSelectedAuthorAction
 import com.assignment.tcimageapp.domain.action.SaveSelectedAuthorAction
+import com.assignment.tcimageapp.domain.repository.AuthorRepository
 
 
 @Module
@@ -16,22 +20,28 @@ import com.assignment.tcimageapp.domain.action.SaveSelectedAuthorAction
 object ActionModule {
     @Provides
     fun provideGetPhotosAction(
-        photosRepository: PhotosRepository
+        networkMonitor: NetworkState,
+        @RemoteQualifier remotePhotosRepository: PhotosRepository,
+        @LocalQualifier localPhotoRepository: PhotosRepository
     ): GetPhotosAction {
-        return GetPhotosAction(photosRepository)
+        return GetPhotosAction(
+            networkMonitor = networkMonitor,
+            localPhotoRepository = localPhotoRepository,
+            remotePhotoRepository = remotePhotosRepository
+        )
     }
 
     @Provides
     fun provideGetSelectedAuthorAction(
-        photosRepository: PhotosRepository
+        authorRepository: AuthorRepository
     ): GetSelectedAuthorAction {
-        return GetSelectedAuthorAction(photosRepository)
+        return GetSelectedAuthorAction(authorRepository)
     }
 
     @Provides
     fun provideSaveSelectedAuthorAction(
-        photosRepository: PhotosRepository
+        authorRepository: AuthorRepository
     ): SaveSelectedAuthorAction {
-        return SaveSelectedAuthorAction(photosRepository)
+        return SaveSelectedAuthorAction(authorRepository)
     }
 }
