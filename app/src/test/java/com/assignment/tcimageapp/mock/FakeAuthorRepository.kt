@@ -4,6 +4,9 @@ import com.assignment.tcimageapp.domain.repository.AuthorRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
+/**
+ * Simple mock repository for testing.
+ */
 class FakeAuthorRepository(): AuthorRepository {
     private val authorMain = MutableStateFlow<String?>(null)
 
