@@ -14,14 +14,15 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.assignment.tcimageapp.data.local.serializers.PhotosSerializer
 import com.assignment.tcimageapp.data.remote.dto.CachedPhotos
 
-private const val PREFS_NAME = "user_preferences"
+private const val PREFS_NAME_AUTHOR = "user_author_preferences"
+private const val PREFS_NAME_PHOTOS = "user_photo_preferences"
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = PREFS_NAME
+    name = PREFS_NAME_AUTHOR
 )
 
 private val Context.dataStoreCore by dataStore(
-    fileName = PREFS_NAME,
+    fileName = PREFS_NAME_PHOTOS,
     serializer = PhotosSerializer()
 )
 
