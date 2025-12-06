@@ -1,5 +1,6 @@
 package com.assignment.tcimageapp.presentation.components
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -41,12 +42,12 @@ fun PhotosScreen(
     viewModel: PhotosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.myPhotos.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.errorMessage) {
         val error = uiState.errorMessage
         if (error != null && uiState.filteredPhotos.isNotEmpty()) {
-            snackbarHostState.showSnackbar(error)
+            snackBarHostState.showSnackbar(error)
         }
     }
 
@@ -74,8 +75,9 @@ fun PhotosScreen(
             )
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(hostState = snackBarHostState)
         }
+
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -97,6 +99,7 @@ fun PhotosScreen(
 
             when {
                 uiState.isLoading -> {
+
                     LoadingShimmerList(
                         modifier = Modifier
                             .fillMaxSize()

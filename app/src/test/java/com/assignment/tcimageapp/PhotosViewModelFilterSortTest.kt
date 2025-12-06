@@ -4,7 +4,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow as MutablePrefsFlow
 import com.assignment.tcimageapp.mock.MainDispatcherRule
 import com.assignment.tcimageapp.core.PhotosSortOption
 import com.assignment.tcimageapp.data.local.OfflineSettingsDataSource
@@ -16,15 +15,16 @@ import com.assignment.tcimageapp.domain.action.GetSelectedAuthorAction
 import com.assignment.tcimageapp.domain.action.SaveOfflineEnabledAction
 import com.assignment.tcimageapp.domain.action.SaveSelectedAuthorAction
 import com.assignment.tcimageapp.domain.repository.PhotosRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.emptyPreferences
+import com.assignment.tcimageapp.core.internet.NetworkState
+import com.assignment.tcimageapp.domain.repository.AuthorRepository
+import com.assignment.tcimageapp.mock.FakeAuthorRepository
+import com.assignment.tcimageapp.mock.FakePhotosRepository
+import com.assignment.tcimageapp.mock.InMemoryPreferencesDataStore
+import com.assignment.tcimageapp.mock.NetworkMonitorFake
 import com.assignment.tcimageapp.presentation.feature.PhotosViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,8 +33,9 @@ class PhotosViewModelFilterSortTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private lateinit var fakeRepository: FakePhotosRepository
-    private lateinit var offlineSettingsDataSource: OfflineSettingsDataSource
+    private lateinit var fakeRepository: PhotosRepository
+    private lateinit var fakeAuthorRepository: AuthorRepository
+    private lateinit var fakeLocalRepository: PhotosRepository
 
     private lateinit var getSelectedAuthorAction: GetSelectedAuthorAction
     private lateinit var saveSelectedAuthorAction: SaveSelectedAuthorAction
@@ -42,6 +43,11 @@ class PhotosViewModelFilterSortTest {
     private lateinit var getOfflineEnabledAction: GetOfflineEnabledAction
     private lateinit var saveOfflineEnabledAction: SaveOfflineEnabledAction
     private lateinit var getPhotosAction: GetPhotosAction
+
+    private lateinit var networkMonitor: NetworkState
+
+    private lateinit var inMemoryDataStore: InMemoryPreferencesDataStore
+    private lateinit var offlineSettingsDataSource: OfflineSettingsDataSource
 
     private lateinit var photos: List<PhotoDto>
 
@@ -55,22 +61,30 @@ class PhotosViewModelFilterSortTest {
         )
 
         fakeRepository = FakePhotosRepository(photos)
+        fakeLocalRepository = FakePhotosRepository(photos)
+        fakeAuthorRepository = FakeAuthorRepository()
 
-        val inMemoryDataStore = InMemoryPreferencesDataStore()
+        networkMonitor = NetworkMonitorFake(true)
+
+        inMemoryDataStore = InMemoryPreferencesDataStore()
         offlineSettingsDataSource = OfflineSettingsDataSource(inMemoryDataStore)
 
-        getSelectedAuthorAction = GetSelectedAuthorAction(fakeRepository)
-        saveSelectedAuthorAction = SaveSelectedAuthorAction(fakeRepository)
+        getSelectedAuthorAction = GetSelectedAuthorAction(fakeAuthorRepository)
+        saveSelectedAuthorAction = SaveSelectedAuthorAction(fakeAuthorRepository)
         clearPhotosCacheAction = ClearPhotosCacheAction(fakeRepository)
         getOfflineEnabledAction = GetOfflineEnabledAction(offlineSettingsDataSource)
         saveOfflineEnabledAction = SaveOfflineEnabledAction(offlineSettingsDataSource)
-        getPhotosAction = GetPhotosAction(fakeRepository)
+        getPhotosAction = GetPhotosAction(
+            networkMonitor = networkMonitor,
+            remotePhotoRepository = fakeRepository,
+            localPhotoRepository = fakeLocalRepository
+        )
     }
 
     private fun createViewModel(): PhotosViewModel {
         return PhotosViewModel(
             getSelectedAuthorAction = getSelectedAuthorAction,
-            saveSelectedAuthorUseCase = saveSelectedAuthorAction,
+            saveSelectedAuthorAction = saveSelectedAuthorAction,
             clearPhotosCacheAction = clearPhotosCacheAction,
             getOfflineEnabledAction = getOfflineEnabledAction,
             saveOfflineEnabledAction = saveOfflineEnabledAction,
@@ -188,7 +202,7 @@ class PhotosViewModelFilterSortTest {
     @Test
     fun changing_sort_does_not_clear_selected_author() = runTest {
         val viewModel = createViewModel()
-        runCurrent() // init
+        runCurrent()
 
         // Select Bro
         viewModel.onAuthorSelected("Bro")
@@ -206,47 +220,4 @@ class PhotosViewModelFilterSortTest {
     }
 }
 
-/**
- * Simple mock repository for testing.
- */
-private class FakePhotosRepository(
-    private val photos: List<PhotoDto>
-) : PhotosRepository {
 
-    private val selectedAuthorFlow = MutableStateFlow<String?>(null)
-
-    override suspend fun fetchPhotos(offlineEnabled: Boolean): Result<List<PhotoDto>> {
-        return Result.success(photos)
-    }
-
-    override fun observeSelectedAuthor(): Flow<String?> = selectedAuthorFlow
-
-    override suspend fun saveSelectedAuthor(author: String?) {
-        selectedAuthorFlow.value = author
-    }
-
-    override suspend fun clearPhotosCache() {
-    }
-}
-
-/**
- * Minimal in memory DataStore for Preferences used only in tests.
- * It supports:
- *  - data flow
- *  - updateData()
- */
-private class InMemoryPreferencesDataStore(
-    initial: Preferences = emptyPreferences()
-) : DataStore<Preferences> {
-
-    private val state = MutablePrefsFlow(initial)
-
-    override val data: Flow<Preferences>
-        get() = state
-
-    override suspend fun updateData(transform: suspend (Preferences) -> Preferences): Preferences {
-        val newValue = transform(state.value)
-        state.value = newValue
-        return newValue
-    }
-}

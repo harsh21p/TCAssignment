@@ -36,7 +36,7 @@ import android.util.Log
 @HiltViewModel
 class PhotosViewModel @Inject constructor(
     private val getSelectedAuthorAction: GetSelectedAuthorAction,
-    private val saveSelectedAuthorUseCase: SaveSelectedAuthorAction,
+    private val saveSelectedAuthorAction: SaveSelectedAuthorAction,
     private val clearPhotosCacheAction: ClearPhotosCacheAction,
     private val getOfflineEnabledAction: GetOfflineEnabledAction,
     private val saveOfflineEnabledAction: SaveOfflineEnabledAction,
@@ -45,7 +45,6 @@ class PhotosViewModel @Inject constructor(
 
     private val myPhotosMain = MutableStateFlow(PhotosUiState())
     val myPhotos: StateFlow<PhotosUiState> = myPhotosMain.asStateFlow()
-
 
     init {
         observeSelectedAuthor()
@@ -70,15 +69,12 @@ class PhotosViewModel @Inject constructor(
     fun loadPhotos() {
         viewModelScope.launch {
             myPhotosMain.update { it.copy(isLoading = true, errorMessage = null) }
-
             val offlineEnabled = myPhotosMain.value.isOfflineEnabled
-            Log.e("VM",offlineEnabled.toString())
             val result = getPhotosAction(offlineEnabled)
 
             result
                 .onSuccess { photos ->
                     val authors = photos.map { it.author }.distinct().sorted()
-                    Log.e("VM","SUCCESS")
                     myPhotosMain.update {
                         it.copy(
                             isLoading = false,
@@ -90,7 +86,6 @@ class PhotosViewModel @Inject constructor(
                     applyFilterAndSort()
                 }
                 .onFailure { throwable ->
-                    Log.e("VM","FAIL")
                     myPhotosMain.update {
                         it.copy(
                             isLoading = false,
@@ -108,20 +103,8 @@ class PhotosViewModel @Inject constructor(
         viewModelScope.launch {
             myPhotosMain.update { it.copy(selectedAuthor = author) }
             applyFilterAndSort()
-            saveSelectedAuthorUseCase(author)
+            saveSelectedAuthorAction(author)
         }
-    }
-
-    // Not using after sort option is added but it was the initial implementation
-    private fun applyFilter() {
-        val state = myPhotosMain.value
-        val selectedAuthor = state.selectedAuthor
-        val filtered = if (selectedAuthor.isNullOrEmpty()) {
-            state.allPhotos
-        } else {
-            state.allPhotos.filter { it.author == selectedAuthor }
-        }
-        myPhotosMain.update { it.copy(filteredPhotos = filtered) }
     }
 
     fun retry() {

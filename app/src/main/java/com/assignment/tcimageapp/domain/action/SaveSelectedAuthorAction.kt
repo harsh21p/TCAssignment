@@ -1,6 +1,6 @@
 package com.assignment.tcimageapp.domain.action
 
-import com.assignment.tcimageapp.domain.repository.PhotosRepository
+import com.assignment.tcimageapp.domain.repository.AuthorRepository
 import jakarta.inject.Inject
 
 /**
@@ -11,7 +11,7 @@ import jakarta.inject.Inject
  * @return Flow emitting the selected author or null if no filter is applied.
  */
 class SaveSelectedAuthorAction @Inject constructor(
-    private val repository: PhotosRepository
+    private val repository: AuthorRepository
 ) {
     suspend operator fun invoke(author: String?) {
         repository.saveSelectedAuthor(author)
