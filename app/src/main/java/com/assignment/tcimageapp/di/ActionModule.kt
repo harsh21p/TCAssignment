@@ -20,28 +20,24 @@ import com.assignment.tcimageapp.domain.repository.AuthorRepository
 object ActionModule {
     @Provides
     fun provideGetPhotosAction(
-        networkMonitor: NetworkState,
-        @RemoteQualifier remotePhotosRepository: PhotosRepository,
-        @LocalQualifier localPhotoRepository: PhotosRepository
+        networkState: NetworkState,
+        @LocalQualifier localPhotoRepository: PhotosRepository,
+        @RemoteQualifier remotePhotoRepository: PhotosRepository
     ): GetPhotosAction {
-        return GetPhotosAction(
-            networkMonitor = networkMonitor,
-            localPhotoRepository = localPhotoRepository,
-            remotePhotoRepository = remotePhotosRepository
-        )
+        return GetPhotosAction(networkState,remotePhotoRepository,localPhotoRepository)
     }
 
     @Provides
     fun provideGetSelectedAuthorAction(
-        authorRepository: AuthorRepository
+        photosRepository: AuthorRepository
     ): GetSelectedAuthorAction {
-        return GetSelectedAuthorAction(authorRepository)
+        return GetSelectedAuthorAction(photosRepository)
     }
 
     @Provides
     fun provideSaveSelectedAuthorAction(
-        authorRepository: AuthorRepository
+        photosRepository: AuthorRepository
     ): SaveSelectedAuthorAction {
-        return SaveSelectedAuthorAction(authorRepository)
+        return SaveSelectedAuthorAction(photosRepository)
     }
 }

@@ -11,7 +11,7 @@ import jakarta.inject.Inject
  * @param author Selected author name or null to clear the filter.
  */
 class GetSelectedAuthorAction @Inject constructor(
-    private val repository: AuthorRepository
+     private val repository: AuthorRepository
 ) {
     operator fun invoke(): Flow<String?> {
         return repository.observeSelectedAuthor()
